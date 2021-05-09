@@ -2,6 +2,7 @@ var axios = require("axios");
 const _ = require("lodash");
 const emailTemplate = require("./emailTemplate");
 const userData = require("./users.json");
+require("custom-env").env("dev");
 var nodemailer = require("nodemailer");
 
 const showResult = (data, user) => {
@@ -100,7 +101,7 @@ const getDate = () => {
 };
 const execScript = async () => {
   console.info("executing");
-  userData.map(async (user) => {
+  _.map(userData, async (user) => {
     let message;
     const { status, data, err } = await fetchCalender(user.PINCODE, getDate());
     console.info("fetch complete", status, data);
