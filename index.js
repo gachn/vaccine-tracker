@@ -1,22 +1,28 @@
 var axios = require("axios");
 const _ = require("lodash");
 const minAge = 45;
+const FEE_TYPE = "Free"; // leave empty to search both free and paid
+const PINCODE = 248001;
+const DATE = "10-05-2021";
+
 const showResult = (data) => {
   const filteredList = [];
   _.map(data.centers, (row) => {
-    _.map(row.sessions, (sec) => {
-      if (sec.min_age_limit == minAge) {
-        filteredList.push({
-          name: row.name,
-          address: row.address,
-          fee_type: row.fee_type,
-          ...sec,
-        });
-      }
-    });
+    if (!FEE_TYPE || row.fee_type === FEE_TYPE) {
+      _.map(row.sessions, (sec) => {
+        if (sec.min_age_limit == minAge) {
+          filteredList.push({
+            name: row.name,
+            address: row.address,
+            fee_type: row.fee_type,
+            ...sec,
+          });
+        }
+      });
+    }
   });
-  console.info(`${filteredList.length} slots found`);
-  console.info(filteredList);
+  console.info(`${filteredList.length} ${FEE_TYPE} slots found`);
+  // console.info(filteredList);
 };
 const fetchCalender = (pincode, date, callback) => {
   var config = {
@@ -42,4 +48,4 @@ const fetchCalender = (pincode, date, callback) => {
       console.log(error);
     });
 };
-fetchCalender("248001", "10-05-2021", showResult);
+fetchCalender(PINCODE, DATE, showResult);
