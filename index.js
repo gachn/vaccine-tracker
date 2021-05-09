@@ -95,7 +95,11 @@ const execScript = async () => {
     body: message,
   };
 };
-execScript();
+
 exports.handler = async (event) => {
   return await execScript();
 };
+
+if (process.env.APP_ENV == "dev") {
+  execScript();
+}
