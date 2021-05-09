@@ -5,7 +5,7 @@ const FEE_TYPE = "Free"; // leave empty to search both free and paid
 const PINCODE = 248001;
 const DATE = "10-05-2021";
 
-const showResult = (data) => {
+const showResult = (data, callback) => {
   const filteredList = [];
   _.map(data.centers, (row) => {
     if (!FEE_TYPE || row.fee_type === FEE_TYPE) {
@@ -22,9 +22,9 @@ const showResult = (data) => {
     }
   });
   console.info(`${filteredList.length} ${FEE_TYPE} slots found`);
-  // console.info(filteredList);
+  return filteredList;
 };
-const fetchCalender = (pincode, date, callback) => {
+const fetchCalender = async (pincode, date, callback) => {
   var config = {
     method: "get",
     url: `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${pincode}&date=${date}`,
@@ -39,13 +39,31 @@ const fetchCalender = (pincode, date, callback) => {
       "User-Agent": "Chrome",
     },
   };
-
-  axios(config)
-    .then(function (response) {
-      callback(response.data);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  try {
+    const response = await axios(config);
+    return {
+      status: 200,
+      data: response.data,
+    };
+  } catch (err) {
+    return {
+      status: 500,
+      err,
+    };
+  }
 };
-fetchCalender(PINCODE, DATE, showResult);
+
+const execScript = async () => {
+  const { status, data, err } = await fetchCalender(PINCODE, DATE);
+  let message = "Success";
+  let listOfCenters;
+  if (status == 200) listOfCenters = showResult(data);
+  else message = err;
+  return {
+    status,
+    body: message,
+  };
+};
+exports.handler = async (event) => {
+  return await execScript();
+};
