@@ -2,10 +2,9 @@ var axios = require("axios");
 const _ = require("lodash");
 const emailTemplate = require("./emailTemplate");
 const userData = require("./users.json");
-require("custom-env").env("dev");
 var nodemailer = require("nodemailer");
 
-const showResult = (data, user) => {
+const showResult = async (data, user) => {
   console.info("Showing result ");
   let filteredList = [];
   _.map(data.centers, (row) => {
@@ -30,13 +29,18 @@ const showResult = (data, user) => {
   console.info(`${filteredList.length} ${user.FEE_TYPE} slots found`);
   if (filteredList && filteredList.length == 0) return filteredList;
   filteredList = _.slice(filteredList, 0, user.MAX_LIST);
-  notifyByEmail(filteredList, user);
+  await notifyByEmail(filteredList, user);
   return filteredList;
 };
 
 const notifyByEmail = async (filteredList, user) => {
   var transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp-mail.outlook.com", // hostname
+    secureConnection: false, // TLS requires secureConnection to be false
+    port: 587, // port for secure SMTP
+    tls: {
+      ciphers: "SSLv3",
+    },
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASSWORD,
@@ -106,12 +110,14 @@ const execScript = async (user) => {
   console.info("executing");
   const { status, data, err } = await fetchCalender(user.PINCODE, getDate());
   console.info("fetch complete");
-  if (status == 200) showResult(data, user);
+  if (status == 200) await showResult(data, user);
 };
 
 exports.handler = async (event) => {
-  await execScript(userData[0]);
-  await execScript(userData[1]);
-  await execScript(userData[2]);
+  await Promise.all([
+    execScript(userData[0]),
+    execScript(userData[1]),
+    execScript(userData[2]),
+  ]);
   return;
 };
