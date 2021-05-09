@@ -10,9 +10,17 @@
   {
     "NAME": "Gaurav Chauhan",
     "MIN_AGE": 45,
-    "MAX_LIST": 10,
-    "FEE_TYPE": "Free",
+    "MAX_LIST": 20,
+    "FEE_TYPE": "",
     "PINCODE": 248001,
     "EMAIL": "chauhangaurav101@gmail.com"
+  },
+  {
+    "NAME": "Rajdeep",
+    "MIN_AGE": 45,
+    "MAX_LIST": 10,
+    "FEE_TYPE": "Free",
+    "PINCODE": 247667,
+    "EMAIL": "rajdeepkandiyal@gmail.com"
   }
 ]
