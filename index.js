@@ -99,25 +99,17 @@ const getDate = () => {
   if (mm < 10) mm = "0" + mm;
   return dd + "-" + mm + "-" + yyyy;
 };
-const execScript = async () => {
+const execScript = async (user) => {
   console.info("executing");
-  _.map(userData, async (user) => {
-    let message;
-    const { status, data, err } = await fetchCalender(user.PINCODE, getDate());
-    console.info("fetch complete", status, data);
-    if (status == 200) showResult(data, user);
-    else message = err;
-    return {
-      status,
-      body: message,
-    };
-  });
+  const { status, data, err } = await fetchCalender(user.PINCODE, getDate());
+  console.info("fetch complete", status, data);
+  if (status == 200) showResult(data, user);
 };
 
 exports.handler = async (event) => {
-  return await execScript();
+  _.map(userData, async (user) => {
+    await execScript(user);
+    console.info("waited");
+  });
+  return;
 };
-
-if (process.env.APP_ENV == "dev") {
-  execScript();
-}
