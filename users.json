@@ -6,5 +6,13 @@
     "FEE_TYPE": "Free",
     "PINCODE": 248001,
     "EMAIL": "chauhangaurav101@gmail.com"
+  },
+  {
+    "NAME": "Gaurav Chauhan",
+    "MIN_AGE": 45,
+    "MAX_LIST": 10,
+    "FEE_TYPE": "Free",
+    "PINCODE": 248001,
+    "EMAIL": "chauhangaurav101@gmail.com"
   }
 ]

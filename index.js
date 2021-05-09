@@ -38,7 +38,7 @@ const notifyByEmail = (filteredList, user) => {
       pass: process.env.EMAIL_PASSWORD,
     },
   });
-  const title = `${user.NAME} | Vaccine Availability at pincode: ${user.PINCODE}`;
+  const title = `${user.NAME} | Vaccine for Age ${user.MIN_AGE} Availability at pincode: ${user.PINCODE}`;
 
   var mailOptions = {
     from: process.env.EMAIL_USER,
