@@ -1,9 +1,13 @@
 var axios = require("axios");
 const _ = require("lodash");
+require("custom-env").env("dev");
+var nodemailer = require("nodemailer");
+
 const minAge = 45;
 const FEE_TYPE = "Free"; // leave empty to search both free and paid
 const PINCODE = 248001;
 const DATE = "10-05-2021";
+const EMAIL = "chauhangaurav101@gmail.com";
 
 const showResult = (data, callback) => {
   const filteredList = [];
@@ -22,8 +26,35 @@ const showResult = (data, callback) => {
     }
   });
   console.info(`${filteredList.length} ${FEE_TYPE} slots found`);
+  notifyByEmail(filteredList);
   return filteredList;
 };
+
+const notifyByEmail = (filteredList) => {
+  var transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  var mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: EMAIL,
+    subject: `Vaccine Availability at pincode: ${PINCODE}`,
+    text: JSON.stringify(filteredList),
+  };
+
+  // send mail with defined transport object
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      return console.log(error);
+    }
+    console.log("Message sent: " + info.response);
+  });
+};
+
 const fetchCalender = async (pincode, date, callback) => {
   var config = {
     method: "get",
@@ -64,7 +95,7 @@ const execScript = async () => {
     body: message,
   };
 };
-
+execScript();
 exports.handler = async (event) => {
   return await execScript();
 };
