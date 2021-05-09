@@ -107,9 +107,8 @@ const execScript = async (user) => {
 };
 
 exports.handler = async (event) => {
-  _.map(userData, async (user) => {
-    await execScript(user);
-    console.info("waited");
-  });
+  await execScript(userData[0]);
+  await execScript(userData[1]);
+  await execScript(userData[2]);
   return;
 };
