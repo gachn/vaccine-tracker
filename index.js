@@ -2,7 +2,6 @@ var axios = require("axios");
 const _ = require("lodash");
 const emailTemplate = require("./emailTemplate");
 const userData = require("./users.json");
-require("custom-env").env("dev");
 var nodemailer = require("nodemailer");
 
 const showResult = (data, user) => {
@@ -93,11 +92,10 @@ const getDate = () => {
   return dd + "-" + mm + "-" + yyyy;
 };
 const execScript = async () => {
+  console.info("executing", process.env);
   userData.map(async (user) => {
     const { status, data, err } = await fetchCalender(user.PINCODE, getDate());
-    let message = "Success";
-    let listOfCenters;
-    if (status == 200) listOfCenters = showResult(data, user);
+    if (status == 200) showResult(data, user);
     else message = err;
     return {
       status,
