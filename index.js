@@ -64,6 +64,7 @@ const execScript = async () => {
     body: message,
   };
 };
+
 exports.handler = async (event) => {
   return await execScript();
 };
