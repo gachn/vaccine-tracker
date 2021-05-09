@@ -114,10 +114,6 @@ const execScript = async (user) => {
 };
 
 exports.handler = async (event) => {
-  await Promise.all([
-    execScript(userData[0]),
-    execScript(userData[1]),
-    execScript(userData[2]),
-  ]);
+  await Promise.all(userData.map((user) => execScript(user)));
   return;
 };
