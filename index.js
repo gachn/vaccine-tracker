@@ -1,16 +1,18 @@
 var axios = require("axios");
 const _ = require("lodash");
+const emailTemplate = require("./emailTemplate");
 require("custom-env").env("dev");
 var nodemailer = require("nodemailer");
 
 const minAge = 45;
+const MAX_LIST = 10;
 const FEE_TYPE = "Free"; // leave empty to search both free and paid
 const PINCODE = 248001;
 const DATE = "10-05-2021";
 const EMAIL = "chauhangaurav101@gmail.com";
 
 const showResult = (data, callback) => {
-  const filteredList = [];
+  let filteredList = [];
   _.map(data.centers, (row) => {
     if (!FEE_TYPE || row.fee_type === FEE_TYPE) {
       _.map(row.sessions, (sec) => {
@@ -26,6 +28,7 @@ const showResult = (data, callback) => {
     }
   });
   console.info(`${filteredList.length} ${FEE_TYPE} slots found`);
+  filteredList = _.slice(filteredList, 0, MAX_LIST);
   notifyByEmail(filteredList);
   return filteredList;
 };
@@ -38,14 +41,15 @@ const notifyByEmail = (filteredList) => {
       pass: process.env.EMAIL_PASSWORD,
     },
   });
+  const title = `Vaccine Availability at pincode: ${PINCODE}`;
+  console.info();
 
   var mailOptions = {
     from: process.env.EMAIL_USER,
     to: EMAIL,
-    subject: `Vaccine Availability at pincode: ${PINCODE}`,
-    text: JSON.stringify(filteredList),
+    subject: title,
+    html: emailTemplate.run({ title, filteredList }),
   };
-
   // send mail with defined transport object
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
