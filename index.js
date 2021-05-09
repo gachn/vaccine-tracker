@@ -72,7 +72,9 @@ const fetchCalender = async (pincode, date) => {
       "User-Agent": "Chrome",
     },
   };
+  console.info("config created", config);
   try {
+    console.info("Sending request");
     const response = await axios(config);
     console.error("Successfull fetch", response);
     return {
@@ -101,6 +103,7 @@ const execScript = async () => {
   userData.map(async (user) => {
     let message;
     const { status, data, err } = await fetchCalender(user.PINCODE, getDate());
+    console.info("fetch complete", status, data);
     if (status == 200) showResult(data, user);
     else message = err;
     return {
