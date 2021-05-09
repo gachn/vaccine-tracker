@@ -11,7 +11,7 @@ const showResult = (data, user) => {
   _.map(data.centers, (row) => {
     if (user.FEE_TYPE.includes(row.fee_type)) {
       _.map(row.sessions, (sec) => {
-        if (sec.min_age_limit <= user.MIN_AGE) {
+        if (sec.min_age_limit == user.MIN_AGE && sec.available_capacity>0) {
           const item = {
             name: row.name,
             address: row.address,
@@ -19,6 +19,9 @@ const showResult = (data, user) => {
             ...sec,
           };
           delete item.session_id;
+          delete item.available_capacity;
+          delete item.slots;
+          delete item.min_age_limit;
           filteredList.push(item);
         }
       });
