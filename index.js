@@ -6,12 +6,12 @@ require("custom-env").env("dev");
 var nodemailer = require("nodemailer");
 
 const showResult = (data, user) => {
-  console.info("Showing result ", user);
+  console.info("Showing result ");
   let filteredList = [];
   _.map(data.centers, (row) => {
     if (user.FEE_TYPE.includes(row.fee_type)) {
       _.map(row.sessions, (sec) => {
-        if (sec.min_age_limit == user.MIN_AGE && sec.available_capacity>0) {
+        if (sec.min_age_limit == user.MIN_AGE && sec.available_capacity > 0) {
           const item = {
             name: row.name,
             address: row.address,
@@ -34,7 +34,7 @@ const showResult = (data, user) => {
   return filteredList;
 };
 
-const notifyByEmail = (filteredList, user) => {
+const notifyByEmail = async (filteredList, user) => {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -52,12 +52,12 @@ const notifyByEmail = (filteredList, user) => {
   };
   console.info(`sending email to ${user.EMAIL}`);
   // send mail with defined transport object
-  await transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      return console.log(error);
-    }
-    console.log("Message sent: " + info.response);
-  });
+  try {
+    await transporter.sendMail(mailOptions);
+    console.error("Mail Sent Successfully");
+  } catch (err) {
+    console.error("err", err);
+  }
 };
 
 const fetchCalender = async (pincode, date) => {
@@ -76,11 +76,11 @@ const fetchCalender = async (pincode, date) => {
       "User-Agent": "Chrome",
     },
   };
-  console.info("config created", config);
+  console.info("config created");
   try {
     console.info("Sending request");
     const response = await axios(config);
-    console.error("Successfull fetch", response);
+    console.error("Successfull fetch");
     return {
       status: 200,
       data: response.data,
@@ -105,7 +105,7 @@ const getDate = () => {
 const execScript = async (user) => {
   console.info("executing");
   const { status, data, err } = await fetchCalender(user.PINCODE, getDate());
-  console.info("fetch complete", status, data);
+  console.info("fetch complete");
   if (status == 200) showResult(data, user);
 };
 
