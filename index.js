@@ -5,6 +5,7 @@ const userData = require("./users.json");
 var nodemailer = require("nodemailer");
 
 const showResult = (data, user) => {
+  console.info("Showing result ", user);
   let filteredList = [];
   _.map(data.centers, (row) => {
     if (!user.FEE_TYPE || row.fee_type === user.FEE_TYPE) {
@@ -55,6 +56,7 @@ const notifyByEmail = (filteredList, user) => {
 };
 
 const fetchCalender = async (pincode, date) => {
+  console.info("Fetching data for ", pincode, date);
   var config = {
     method: "get",
     url: `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${pincode}&date=${date}`,
@@ -76,6 +78,7 @@ const fetchCalender = async (pincode, date) => {
       data: response.data,
     };
   } catch (err) {
+    console.error("Error while fetching result ", err);
     return {
       status: 500,
       err,
@@ -92,7 +95,7 @@ const getDate = () => {
   return dd + "-" + mm + "-" + yyyy;
 };
 const execScript = async () => {
-  console.info("executing", process.env);
+  console.info("executing");
   userData.map(async (user) => {
     const { status, data, err } = await fetchCalender(user.PINCODE, getDate());
     if (status == 200) showResult(data, user);
