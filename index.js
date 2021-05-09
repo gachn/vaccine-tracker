@@ -99,6 +99,7 @@ const getDate = () => {
 const execScript = async () => {
   console.info("executing");
   userData.map(async (user) => {
+    let message;
     const { status, data, err } = await fetchCalender(user.PINCODE, getDate());
     if (status == 200) showResult(data, user);
     else message = err;
