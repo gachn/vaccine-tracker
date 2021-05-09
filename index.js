@@ -9,7 +9,7 @@ const showResult = (data, user) => {
   console.info("Showing result ", user);
   let filteredList = [];
   _.map(data.centers, (row) => {
-    if (!user.FEE_TYPE || row.fee_type === user.FEE_TYPE) {
+    if (user.FEE_TYPE.includes(row.fee_type)) {
       _.map(row.sessions, (sec) => {
         if (sec.min_age_limit <= user.MIN_AGE) {
           const item = {
@@ -49,7 +49,7 @@ const notifyByEmail = (filteredList, user) => {
   };
   console.info(`sending email to ${user.EMAIL}`);
   // send mail with defined transport object
-  transporter.sendMail(mailOptions, function (error, info) {
+  await transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       return console.log(error);
     }
