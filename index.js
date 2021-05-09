@@ -1,39 +1,36 @@
 var axios = require("axios");
 const _ = require("lodash");
 const emailTemplate = require("./emailTemplate");
+const userData = require("./users.json");
 require("custom-env").env("dev");
 var nodemailer = require("nodemailer");
 
-const minAge = 45;
-const MAX_LIST = 10;
-const FEE_TYPE = "Free"; // leave empty to search both free and paid
-const PINCODE = 248001;
-const DATE = "10-05-2021";
-const EMAIL = "chauhangaurav101@gmail.com";
-
-const showResult = (data, callback) => {
+const showResult = (data, user) => {
   let filteredList = [];
   _.map(data.centers, (row) => {
-    if (!FEE_TYPE || row.fee_type === FEE_TYPE) {
+    if (!user.FEE_TYPE || row.fee_type === user.FEE_TYPE) {
       _.map(row.sessions, (sec) => {
-        if (sec.min_age_limit == minAge) {
-          filteredList.push({
+        if (sec.min_age_limit <= user.MIN_AGE) {
+          const item = {
             name: row.name,
             address: row.address,
             fee_type: row.fee_type,
             ...sec,
-          });
+          };
+          delete item.session_id;
+          filteredList.push(item);
         }
       });
     }
   });
-  console.info(`${filteredList.length} ${FEE_TYPE} slots found`);
-  filteredList = _.slice(filteredList, 0, MAX_LIST);
-  notifyByEmail(filteredList);
+  console.info(`${filteredList.length} ${user.FEE_TYPE} slots found`);
+  if (filteredList && filteredList.length == 0) return filteredList;
+  filteredList = _.slice(filteredList, 0, user.MAX_LIST);
+  notifyByEmail(filteredList, user);
   return filteredList;
 };
 
-const notifyByEmail = (filteredList) => {
+const notifyByEmail = (filteredList, user) => {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -41,12 +38,11 @@ const notifyByEmail = (filteredList) => {
       pass: process.env.EMAIL_PASSWORD,
     },
   });
-  const title = `Vaccine Availability at pincode: ${PINCODE}`;
-  console.info();
+  const title = `${user.NAME} | Vaccine Availability at pincode: ${user.PINCODE}`;
 
   var mailOptions = {
     from: process.env.EMAIL_USER,
-    to: EMAIL,
+    to: user.EMAIL,
     subject: title,
     html: emailTemplate.run({ title, filteredList }),
   };
@@ -59,7 +55,7 @@ const notifyByEmail = (filteredList) => {
   });
 };
 
-const fetchCalender = async (pincode, date, callback) => {
+const fetchCalender = async (pincode, date) => {
   var config = {
     method: "get",
     url: `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${pincode}&date=${date}`,
@@ -87,17 +83,27 @@ const fetchCalender = async (pincode, date, callback) => {
     };
   }
 };
-
+const getDate = () => {
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth() + 1;
+  var yyyy = today.getFullYear();
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+  return dd + "-" + mm + "-" + yyyy;
+};
 const execScript = async () => {
-  const { status, data, err } = await fetchCalender(PINCODE, DATE);
-  let message = "Success";
-  let listOfCenters;
-  if (status == 200) listOfCenters = showResult(data);
-  else message = err;
-  return {
-    status,
-    body: message,
-  };
+  userData.map(async (user) => {
+    const { status, data, err } = await fetchCalender(user.PINCODE, getDate());
+    let message = "Success";
+    let listOfCenters;
+    if (status == 200) listOfCenters = showResult(data, user);
+    else message = err;
+    return {
+      status,
+      body: message,
+    };
+  });
 };
 
 exports.handler = async (event) => {

@@ -1,6 +1,7 @@
 const _ = require("lodash");
 
 module.exports.run = ({ title, filteredList }) => {
+  if (filteredList && filteredList.length == 0) return;
   let htmlStart =
     "<table width='100%' cellpadding='0' cellspacing='0' style='min-width:100%;'> <thead><tr>";
   let keys;
