@@ -46,6 +46,7 @@ const notifyByEmail = (filteredList, user) => {
     subject: title,
     html: emailTemplate.run({ title, filteredList }),
   };
+  console.info(`sending email to ${user.EMAIL}`);
   // send mail with defined transport object
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
@@ -73,6 +74,7 @@ const fetchCalender = async (pincode, date) => {
   };
   try {
     const response = await axios(config);
+    console.error("Successfull fetch", response);
     return {
       status: 200,
       data: response.data,
