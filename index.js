@@ -46,7 +46,9 @@ const notifyByEmail = async (filteredList, user) => {
       pass: process.env.EMAIL_PASSWORD,
     },
   });
-  const title = `${user.NAME} | Vaccine for Age ${user.MIN_AGE} Availability at pincode: ${user.PINCODE}`;
+  const title = `${user.NAME} | Vaccine for Age ${
+    user.MIN_AGE
+  } Availability at : ${user.DISCTRICT_ID ? user.DISCTRICT_ID : user.PINCODE}`;
 
   var mailOptions = {
     from: process.env.EMAIL_USER,
@@ -64,11 +66,16 @@ const notifyByEmail = async (filteredList, user) => {
   }
 };
 
-const fetchCalender = async (pincode, date) => {
-  console.info("Fetching data for ", pincode, date);
+const fetchCalender = async (user, date) => {
+  let url;
+  if (user.DISCTRICT_ID)
+    url = `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${user.DISCTRICT_ID}&date=${date}`;
+  else
+    url = `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${user.PINCODE}&date=${date}`;
+
   var config = {
     method: "get",
-    url: `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${pincode}&date=${date}`,
+    url,
     headers: {
       "sec-ch-ua":
         '" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"',
@@ -108,7 +115,7 @@ const getDate = () => {
 };
 const execScript = async (user) => {
   console.info("executing");
-  const { status, data, err } = await fetchCalender(user.PINCODE, getDate());
+  const { status, data, err } = await fetchCalender(user, getDate());
   console.info("fetch complete");
   if (status == 200) await showResult(data, user);
 };
