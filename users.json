@@ -22,5 +22,13 @@
     "FEE_TYPE": ["Free", "Paid"],
     "PINCODE": 332316,
     "EMAIL": "abhineshgarhwal@gmail.com"
+  },
+  {
+    "NAME": "Vikas Singh",
+    "MIN_AGE": 18,
+    "MAX_LIST": 10,
+    "FEE_TYPE": ["Free", "Paid"],
+    "PINCODE": 486001,
+    "EMAIL": "vikas070696@gmail.com"
   }
 ]
