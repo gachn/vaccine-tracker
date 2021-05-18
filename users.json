@@ -1,13 +1,5 @@
 [
   {
-    "NAME": "Gaurav Chauhan",
-    "MIN_AGE": 18,
-    "MAX_LIST": 10,
-    "FEE_TYPE": ["Free", "Paid"],
-    "DISCTRICT_ID": 697,
-    "EMAIL": "chauhangaurav101@gmail.com"
-  },
-  {
     "NAME": "Abhinesh",
     "MIN_AGE": 18,
     "MAX_LIST": 10,
