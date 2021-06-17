@@ -8,11 +8,35 @@
     "EMAIL": "abhineshgarhwal@gmail.com"
   },
   {
-    "NAME": "Raj",
+    "NAME": "Abhinesh",
     "MIN_AGE": 18,
     "MAX_LIST": 10,
     "FEE_TYPE": ["Free", "Paid"],
-    "PINCODE": 396050,
-    "EMAIL": "rajtalekar24@gmail.com"
+    "PINCODE": 332031,
+    "EMAIL": "abhineshgarhwal@gmail.com"
+  },
+  {
+    "NAME": "Abhinesh",
+    "MIN_AGE": 18,
+    "MAX_LIST": 10,
+    "FEE_TYPE": ["Free", "Paid"],
+    "PINCODE": 332001,
+    "EMAIL": "abhineshgarhwal@gmail.com"
+  },
+  {
+    "NAME": "Abhinesh",
+    "MIN_AGE": 18,
+    "MAX_LIST": 10,
+    "FEE_TYPE": ["Free", "Paid"],
+    "PINCODE": 332316,
+    "EMAIL": "abhineshgarhwal@gmail.com"
+  },
+  {
+    "NAME": "Abhinesh",
+    "MIN_AGE": 18,
+    "MAX_LIST": 10,
+    "FEE_TYPE": ["Free", "Paid"],
+    "PINCODE": 333042,
+    "EMAIL": "abhineshgarhwal@gmail.com"
   }
 ]
